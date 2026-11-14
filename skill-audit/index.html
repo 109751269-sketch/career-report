@@ -46,7 +46,7 @@
     <div class="meta">快照日期 2026-11-14 ｜ 数据目录 F:\despseekharness\crawler\output ｜ 本页不含任何登录凭据与风控参数细节</div>
   </header>
 
-  <div class="kpis"><div class="kpi"><b>5</b><span>数据渠道</span></div><div class="kpi"><b>4</b><span>脉脉固定专题</span></div><div class="kpi"><b>42,558</b><span>四大专题去重帖</span></div><div class="kpi"><b>460</b><span>新版有效评论</span></div><div class="kpi"><b>34</b><span>公司 ID 缓存</span></div></div>
+  <div class="kpis"><div class="kpi"><b>5</b><span>数据渠道</span></div><div class="kpi"><b>4</b><span>脉脉固定专题</span></div><div class="kpi"><b>42,558</b><span>四大专题去重帖</span></div><div class="kpi"><b>3,045</b><span>新版有效评论</span></div><div class="kpi"><b>34</b><span>公司 ID 缓存</span></div></div>
 
   <div class="note"><strong>一句话结论：</strong>帖子侧已覆盖 4 个固定专题共 42,558 条去重内容，但<strong>评论侧长期是空白</strong>——四大专题评论量为 0 的原因是「任务配置没开评论采集」，不是「没有评论」。本次已打通评论链路并验证：真实评论覆盖率 96.1%、清洗后有效率 85.8%。</div>
 
@@ -105,7 +105,12 @@
     <div class="card"><h3>② 能否与帖子正确关联？</h3><p><strong>能。</strong>按帖 ID 建详情页 URL，评论与正文一一对应。实测公司印象 156 帖中 97 帖有评论（62.2%）、职言 184 帖中 145 帖有评论（78.8%）。另外发现 RSC 的 <code>title</code> 字段才是「评价对象公司名」（如「中兴通讯印象 · 能源 · 3年以上」），此前被采集函数丢弃，现已补齐，可按公司优先抓。</p></div>
   </div>
   <div class="box"><strong>③ 覆盖率与过滤：</strong>首屏只加载部分评论（覆盖率约 28%），加入「循环点开全部回复 + 滚动到收敛」后提升到 <strong>96.1%</strong>。清洗规则过滤短链广告、引流、招聘软文、纯表情/标点/数字、重复文本；20 帖实测声明 558 条 → 抓到 536 → 有效 460 条（85.8%），剔除广告 29 / 无效 24 / 重复 23，53 条人工复核无误杀。</div>
-  <div class="warnbox"><strong>全量采集进行中</strong>（公司优先队列 + 6 专题 + 断点续采）。本页展示的是最近一次落盘统计，采集完成后会重新生成。</div>
+  
+  <div class="okbox"><strong>全量采集已完成一轮：</strong>帖子池 802 帖、目标公司命中 10 帖（强命中 10）；
+  实际抓评论 139 帖 / 声明 4,171 条 / 抓到 3,673 条（覆盖率 88.1%）/ 清洗后有效 3,045 条（有效率 82.9%）；耗时 2,414 秒。</div>
+  <p class="sub">按公司命中：深圳联友科技 1帖/5条有效 · 明略科技 1帖/2条有效 · 贝壳找房 6帖/58条有效 · 沃尔玛中国 1帖/10条有效 · 瑞幸咖啡 1帖/2条有效</p>
+  <p class="sub"><strong>样本充足度</strong>（对齐「<10 条不得给 A」）：深圳联友科技 thin · 明略科技 insufficient · 贝壳找房 ok · 沃尔玛中国 ok · 瑞幸咖啡 insufficient。按公司聚合的有效评论已写入 <code>company_evidence.json</code>，可直接用于口碑打分。</p>
+
 
   <h3>3.1 历史评论数据为什么不能用于打分</h3>
   <table><thead><tr><th>目录</th><th>条数</th><th>问题</th></tr></thead><tbody><tr><td><code>maimai_dji_search</code></td><td>3,796</td><td>每条为一整块字符串，楼中楼糊在一起，无作者/时间</td></tr><tr><td><code>maimai_gossip_comments</code></td><td>989</td><td>同上，且含 taou.cn 短链广告</td></tr><tr><td><code>maimai_recommended_comments</code></td><td>1,153</td><td>同上</td></tr><tr><td><code>_smoke_comments_v2</code></td><td>202</td><td>抓错容器：抓到的是帖子列表不是评论区</td></tr></tbody></table>
@@ -123,7 +128,7 @@
 
   <h2>五、TODO 看板</h2>
   <table><thead><tr><th style="width:90px">状态</th><th style="width:220px">事项</th><th>说明 / 验收</th></tr></thead><tbody>
-    <tr><td><span class="pill p-ok">已完成</span></td><td><strong>牛客「裁员」正则污染</strong></td><td>新增 textsignals.js 统一判定；滴滴 40.2%→1.8%、拼多多 63.6%→3.7%；30 条误伤抽查通过</td></tr><tr><td><span class="pill p-ok">已完成</span></td><td><strong>growthScore 薪资口径</strong></td><td>v3.1：公司均薪退出打分，成长性只用招聘同比；新增 _meta 口径说明。顺带发现原字段是 5 年累计而非同比</td></tr><tr><td><span class="pill p-ok">已完成</span></td><td><strong>脉脉评论链路打通</strong></td><td>RSC 拦截 cmts/id/egid/title → gossip-detail 详情页 → 循环展开到收敛；项目侧 harvest_comments_v3/v4</td></tr><tr><td><span class="pill p-ok">已完成</span></td><td><strong>评论清洗与过滤</strong></td><td>lib/comment-filter.js：广告 / 引流 / 招聘软文 / 无效 / 重复；53 条验证只剔 4 条且无误杀</td></tr><tr><td><span class="pill p-ok">已完成</span></td><td><strong>职友集风控守卫</strong></td><td>lib/jobui-guard.js + preflight；5 个采集脚本入口强制体检，冷却期零请求直接退出</td></tr>
+    <tr><td><span class="pill p-ok">已完成</span></td><td><strong>牛客「裁员」正则污染</strong></td><td>新增 textsignals.js 统一判定；滴滴 40.2%→1.8%、拼多多 63.6%→3.7%；30 条误伤抽查通过</td></tr><tr><td><span class="pill p-ok">已完成</span></td><td><strong>growthScore 薪资口径</strong></td><td>v3.1：公司均薪退出打分，成长性只用招聘同比；新增 _meta 口径说明。顺带发现原字段是 5 年累计而非同比</td></tr><tr><td><span class="pill p-ok">已完成</span></td><td><strong>脉脉评论链路打通</strong></td><td>RSC 拦截 cmts/id/egid/title → gossip-detail 详情页 → 循环展开到收敛；项目侧 harvest_comments_v3/v4</td></tr><tr><td><span class="pill p-ok">已完成</span></td><td><strong>评论清洗与过滤</strong></td><td>lib/comment-filter.js：广告 / 引流 / 招聘软文 / 无效 / 重复；53 条验证只剔 4 条且无误杀</td></tr><tr><td><span class="pill p-ok">已完成</span></td><td><strong>职友集风控守卫</strong></td><td>lib/jobui-guard.js + preflight；5 个采集脚本入口强制体检，冷却期零请求直接退出</td></tr><tr><td><span class="pill p-ok">已完成</span></td><td><strong>RSC title 公司字段补齐</strong></td><td>collectPostsRich 保留评价对象公司名，公司优先队列才真正生效</td></tr><tr><td><span class="pill p-ok">已完成</span></td><td><strong>评论清洗规则补强</strong></td><td>真实批次暴露 4 类漏网 + 1 处误杀，已全修；389 条→保留 302 且无误杀</td></tr>
     <tr><td><span class="pill p-run">进行中</span></td><td><strong>脉脉评论全量采集</strong></td><td>6 专题 + 公司优先队列 + 断点续采，进行中</td></tr><tr><td><span class="pill p-run">进行中</span></td><td><strong>职友集剩余岗位细分薪资</strong></td><td>34 个 ID 已缓存、29 条已采；当前 IP 被风控，解封后由 preflight 放行</td></tr><tr><td><span class="pill p-run">进行中</span></td><td><strong>小红书详情补抓</strong></td><td>详情 118 / 列表 2,162（5.5%），按互动与关键词分诊续抓</td></tr>
     <tr><td><span class="pill p-warn">待办</span></td><td><strong>修 datefilter.js 相对时间解析</strong></td><td>同月未来日期未回退年份，导致 1,212 条被归档到 2026-11-15~11-30</td></tr><tr><td><span class="pill p-warn">待办</span></td><td><strong>脉脉「offer 选择」专题</strong></td><td>目前无数据</td></tr><tr><td><span class="pill p-warn">待办</span></td><td><strong>公司主页定向抓取</strong></td><td>当前 404，无法按公司直达</td></tr><tr><td><span class="pill p-warn">待办</span></td><td><strong>看准 / BOSS 点评 / 知乎 / 贴吧 / 微博</strong></td><td>未接入</td></tr><tr><td><span class="pill p-warn">待办</span></td><td><strong>cloudflared 发布下线</strong></td><td>已迁 GitHub Pages，可关闭</td></tr>
   </tbody></table>
