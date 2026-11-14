@@ -52,7 +52,7 @@
 
   <h2>一、渠道矩阵</h2>
   <table><thead><tr><th>渠道</th><th>取数方式</th><th>登录态</th><th>风控特征</th><th>当前状态</th><th>数据量</th></tr></thead>
-  <tbody><tr><td><strong>脉脉 maimai.cn</strong></td><td>RSC 数据流拦截 + 持久化 profile</td><td>需登录（Cookie 复用）</td><td>搜索 ≤1 次/30min；频道/专题页不受搜索风控</td><td><span class="pill p-ok">可用</span></td><td>42,558 帖（四大专题）</td></tr><tr><td><strong>牛客 nowcoder.com</strong></td><td>公开 JSON API（免登录）</td><td>不需要</td><td>无风控</td><td><span class="pill p-ok">可用</span></td><td>7,092 条 / 16 家</td></tr><tr><td><strong>职友集 jobui.com</strong></td><td>纯 HTTP GET + 公司 ID 缓存</td><td>不需要</td><td>搜索接口易触发验证码；风控按 IP 累积，会扩散到全站</td><td><span class="pill p-bad">⚠ 当前 IP 被风控</span></td><td>34 ID / 29 条岗位薪资</td></tr><tr><td><strong>小红书 xhs</strong></td><td>搜索页 + 笔记详情</td><td>需登录</td><td>详情抓取需分诊限速</td><td><span class="pill p-ok">可用（覆盖率低）</span></td><td>2,162 列表 / 118 详情</td></tr><tr><td><strong>X / Twitter</strong></td><td>SearchTimeline 按季度分段</td><td>需登录</td><td>GraphQL 手工分页 404</td><td><span class="pill p-ok">可用</span></td><td>历史 BTC 专题</td></tr></tbody></table>
+  <tbody><tr><td><strong>脉脉 maimai.cn</strong></td><td>RSC 数据流拦截 + 持久化 profile</td><td>需登录（Cookie 复用）</td><td>搜索 ≤1 次/30min；频道/专题页不受搜索风控</td><td><span class="pill p-ok">可用</span></td><td>42,558 帖（四大专题）</td></tr><tr><td><strong>牛客 nowcoder.com</strong></td><td>公开 JSON API（免登录）</td><td>不需要</td><td>无风控</td><td><span class="pill p-ok">可用</span></td><td>7,092 条 / 16 家</td></tr><tr><td><strong>职友集 jobui.com</strong></td><td>纯 HTTP GET + 公司 ID 缓存</td><td>不需要</td><td>搜索接口易触发验证码；风控按 IP 累积，会扩散到全站</td><td><span class="pill p-bad">⚠ 当前 IP 被风控</span></td><td>34 ID / 29 条岗位薪资</td></tr><tr><td><strong>小红书 xhs</strong></td><td>搜索页 + 笔记详情</td><td>需登录</td><td>详情抓取需分诊限速</td><td><span class="pill p-ok">可用（覆盖率低）</span></td><td>2,162 列表 / 168 详情</td></tr><tr><td><strong>X / Twitter</strong></td><td>SearchTimeline 按季度分段</td><td>需登录</td><td>GraphQL 手工分页 404</td><td><span class="pill p-ok">可用</span></td><td>历史 BTC 专题</td></tr></tbody></table>
 
   <h2>二、脉脉专题清单（帖子量 / 评论量 / 时间范围）</h2>
   <table><thead><tr><th>专题</th><th>类型</th><th>帖子量（原始 / 去重）</th><th>评论量</th><th>覆盖时间</th><th>最近抓取</th></tr></thead>
@@ -97,7 +97,7 @@
     <td>989 <span class="pill p-bad">旧格式·不可用</span></td>
     <td>—</td>
     <td>2026-09-11</td></tr></tbody></table>
-  <p class="sub">「未抓取」= 任务配置里没有评论采集段、目录也没有 posts_with_comments.json；「旧格式·不可用」= 抓到了，但结构损坏（见下节）。牛客 7,092 条记录 / 91 条评论；小红书 2,162 条列表 / 118 篇详情 / 544 条评论。</p>
+  <p class="sub">「未抓取」= 任务配置里没有评论采集段、目录也没有 posts_with_comments.json；「旧格式·不可用」= 抓到了，但结构损坏（见下节）。牛客 7,092 条记录 / 91 条评论；小红书 2,162 条列表 / 168 篇详情 / 1,034 条评论。</p>
 
   <h2>三、评论能力评估（本轮重点）</h2>
   <div class="grid2">
@@ -121,7 +121,7 @@
     <tr><td><strong>相对时间解析产生未来日期</strong></td><td>1,212 条 / 16 天</td><td>同月但日期在未来时未回退年份，被归档到 2026-11-15~11-30。统计层已按「只取 ≤ 今天」修正；<strong>datefilter.js 本体待修</strong></td></tr>
     <tr><td><strong>四大专题评论为 0</strong></td><td>4 个专题 / 0 条</td><td>确认是「没抓」而非「无评论」；已由 v3/v4 新链路补抓，旧任务配置不改</td></tr>
     <tr><td><strong>牛客内推软文污染</strong></td><td>贝壳 131 条中大量</td><td>按「内推/校招/投递/简历」清洗后仅剩少量真实体验，牛客只作旁证</td></tr>
-    <tr><td><strong>小红书详情覆盖低</strong></td><td>118 / 2,162（5.5%）</td><td>列表数据充分，但评论/正文细节稀疏；需按互动与关键词分诊补抓</td></tr>
+    <tr><td><strong>小红书详情覆盖低</strong></td><td>168 / 2,162（7.8%）</td><td>列表数据充分，但评论/正文细节稀疏；需按互动与关键词分诊补抓</td></tr>
     <tr><td><strong>职友集 IP 风控</strong></td><td>34 ID / 29 条岗位薪资</td><td>批量请求后整站跳验证码，长时间未恢复。已加 preflight 熔断，冷却期禁止采集；不靠重试硬扛</td></tr>
     <tr><td><strong>评价主体错位</strong></td><td>定性</td><td>销售/门店/基层岗评价不能代表总部数据岗；跨主体口碑已在求职报告中标注</td></tr>
   </tbody></table>
@@ -129,7 +129,7 @@
   <h2>五、TODO 看板</h2>
   <table><thead><tr><th style="width:90px">状态</th><th style="width:220px">事项</th><th>说明 / 验收</th></tr></thead><tbody>
     <tr><td><span class="pill p-ok">已完成</span></td><td><strong>牛客「裁员」正则污染</strong></td><td>新增 textsignals.js 统一判定；滴滴 40.2%→1.8%、拼多多 63.6%→3.7%；30 条误伤抽查通过</td></tr><tr><td><span class="pill p-ok">已完成</span></td><td><strong>growthScore 薪资口径</strong></td><td>v3.1：公司均薪退出打分，成长性只用招聘同比；新增 _meta 口径说明。顺带发现原字段是 5 年累计而非同比</td></tr><tr><td><span class="pill p-ok">已完成</span></td><td><strong>脉脉评论链路打通</strong></td><td>RSC 拦截 cmts/id/egid/title → gossip-detail 详情页 → 循环展开到收敛；项目侧 harvest_comments_v3/v4</td></tr><tr><td><span class="pill p-ok">已完成</span></td><td><strong>评论清洗与过滤</strong></td><td>lib/comment-filter.js：广告 / 引流 / 招聘软文 / 无效 / 重复；53 条验证只剔 4 条且无误杀</td></tr><tr><td><span class="pill p-ok">已完成</span></td><td><strong>职友集风控守卫</strong></td><td>lib/jobui-guard.js + preflight；5 个采集脚本入口强制体检，冷却期零请求直接退出</td></tr><tr><td><span class="pill p-ok">已完成</span></td><td><strong>RSC title 公司字段补齐</strong></td><td>collectPostsRich 保留评价对象公司名，公司优先队列才真正生效</td></tr><tr><td><span class="pill p-ok">已完成</span></td><td><strong>评论清洗规则补强</strong></td><td>真实批次暴露 4 类漏网 + 1 处误杀，已全修；389 条→保留 302 且无误杀</td></tr>
-    <tr><td><span class="pill p-run">进行中</span></td><td><strong>脉脉评论全量采集</strong></td><td>6 专题 + 公司优先队列 + 断点续采，进行中</td></tr><tr><td><span class="pill p-run">进行中</span></td><td><strong>职友集剩余岗位细分薪资</strong></td><td>34 个 ID 已缓存、29 条已采；当前 IP 被风控，解封后由 preflight 放行</td></tr><tr><td><span class="pill p-run">进行中</span></td><td><strong>小红书详情补抓</strong></td><td>详情 118 / 列表 2,162（5.5%），按互动与关键词分诊续抓</td></tr>
+    <tr><td><span class="pill p-run">进行中</span></td><td><strong>脉脉评论全量采集</strong></td><td>6 专题 + 公司优先队列 + 断点续采，进行中</td></tr><tr><td><span class="pill p-run">进行中</span></td><td><strong>职友集剩余岗位细分薪资</strong></td><td>34 个 ID 已缓存、29 条已采；当前 IP 被风控，解封后由 preflight 放行</td></tr><tr><td><span class="pill p-run">进行中</span></td><td><strong>小红书详情补抓</strong></td><td>详情 168 / 列表 2,162（7.8%），按互动与关键词分诊续抓</td></tr>
     <tr><td><span class="pill p-warn">待办</span></td><td><strong>修 datefilter.js 相对时间解析</strong></td><td>同月未来日期未回退年份，导致 1,212 条被归档到 2026-11-15~11-30</td></tr><tr><td><span class="pill p-warn">待办</span></td><td><strong>脉脉「offer 选择」专题</strong></td><td>目前无数据</td></tr><tr><td><span class="pill p-warn">待办</span></td><td><strong>公司主页定向抓取</strong></td><td>当前 404，无法按公司直达</td></tr><tr><td><span class="pill p-warn">待办</span></td><td><strong>看准 / BOSS 点评 / 知乎 / 贴吧 / 微博</strong></td><td>未接入</td></tr><tr><td><span class="pill p-warn">待办</span></td><td><strong>cloudflared 发布下线</strong></td><td>已迁 GitHub Pages，可关闭</td></tr>
   </tbody></table>
 
